@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OSC test server</title>
+    <script src="../Library/p5.js"></script>
+    <script src="../Library/addons/p5.dom.js"></script>
+    <script src="../Library/socket_io.js"></script>
+    <script src="../oscLib.js"></script>
+    <script type="text/javascript" src="../node_modules/osc-js/lib/osc.min.js"></script>
+    <script src="myosc.js"></script>
+
+    <style>
+        input.horizontalSlider {
+            -webkit-appearance: slider-vertical;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <button id="accelPermsButton" {# onclick="getAccel()" #} style="height:150px;font-size:60px;">Get Accelerometer
+        Permissions</button>
+
+
+    <div class="indicatorDot" style="left:30%; top:30%;"></div>
+
+    <button id="send">Send Message</button>
+</body>
+
+</html>
