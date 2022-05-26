@@ -17,11 +17,12 @@
 
     <script src="../Library/p5.js"></script>
     <script src="../Library/addons/p5.dom.js"></script>
-    <script src="../Library/socket_io.js"></script>
-    <script src="../oscLib.js"></script>
+
     <script src="sender.js"></script>
 
-
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+        integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+        crossorigin="anonymous"></script>
 
     <script>
 
@@ -32,15 +33,6 @@
         var updateRate = 1 / 60; // Sensor refresh rate
 
         function getAccel() {
-
-            connect = new Connect();
-            connnect.connectToServer(
-                function () {
-                    client = new Client();
-                    client.start("192.168.178.158", 1731);
-                }
-            );
-
 
             DeviceMotionEvent.requestPermission().then(response => {
                 if (response == 'granted') {
