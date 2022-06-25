@@ -1,7 +1,20 @@
+// doorbraak: chat en acc via https!
+
 const express = require('express');
 const app = express();
 const http = require('http');
-const server = http.createServer(app);
+//const server = http.createServer(app);
+
+const https = require('https');
+var fs = require('fs');
+var options = {
+  key: fs.readFileSync('/Applications/MAMP/Library/OpenSSL/certs/node.local.key'),
+  cert: fs.readFileSync('/Applications/MAMP/Library/OpenSSL/certs/node.local.crt'),
+  ca: fs.readFileSync('/Applications/MAMP/Library/OpenSSL/certs/MAMP_PRO_Root_CA.crt')
+};
+
+
+const server = https.createServer(options, app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
