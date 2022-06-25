@@ -75,9 +75,6 @@
 
 
 
-    <!-- /accel -->
-
-
 </head>
 
 <body style="background-color:lightblue;">
@@ -164,6 +161,7 @@
                             "top:" + (py) + "%;");
 
                         socket.emit('chat message', px);
+                        //  socket.emit('chat message', px + ' ' + py);
 
                     });
                 }
