@@ -9,8 +9,12 @@ const client2 = new Client('localhost', 3000);
 
 'use strict';
 
-var udp = require('dgram');
+// var udp = require('dgram');
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 
 const https = require('https');
@@ -43,13 +47,14 @@ getIpClient();
 
 io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
-    // io.emit('chat message', msg);
+   //  io.emit('chat message', msg);
 
     if (ip!='') {
 
       console.log(ip);
       console.log(msg);
-  
+      const msgArr = msg.split(" ");
+
       // /w5c9FHmopCq6QU-u/deviceinfo "iPhone 6s" w5c9FHmopCq6QU-u ios 15.5 750 1334
       // receivedmess: /ZIGSIM/w5c9FHmopCq6QU-u/compass 224.804474 0
       // receivedmess: /ZIGSIM/w5c9FHmopCq6QU-u/gyro -0.014816 -0.034539 -0.000338
@@ -57,7 +62,8 @@ io.on('connection', (socket) => {
   
   
       const message = new Message('/ZIGSIM/w5c9FHmopCq6QU-u/gyro');
-      message.append(msg);
+      message.append(Number(msgArr[0]));
+      message.append(Number(msgArr[1]));
       message.append(ip);
   
       client2.send(message, (err) => {
