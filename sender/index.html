@@ -15,10 +15,10 @@
         }
     </style>
 
-    <script src="../Library/p5.js"></script>
-    <script src="../Library/addons/p5.dom.js"></script>
-    <script src="../Library/socket_io.js"></script>
-    <script src="../oscLib.js"></script>
+    <script src="Library/p5.js"></script>
+    <script src="Library/addons/p5.dom.js"></script>
+    <script src="Library/socket_io.js"></script>
+    <script src="oscLib.js"></script>
     <script src="sender.js"></script>
 
 
@@ -32,24 +32,8 @@
         var updateRate = 1 / 60; // Sensor refresh rate
 
         function getAccel() {
-
-            connect = new Connect();
-            connnect.connectToServer(
-                function () {
-                    client = new Client();
-                    client.start("192.168.178.158", 1731);
-                }
-            );
-
-
             DeviceMotionEvent.requestPermission().then(response => {
                 if (response == 'granted') {
-
-
-
-                    const element = document.getElementById('accelPermsButton');
-                    element.remove(); // Removes the div with the 'div-02' id
-
                     // Add a listener to get smartphone orientation 
                     // in the alpha-beta-gamma axes (units in degrees)
                     window.addEventListener('deviceorientation', (event) => {
@@ -84,6 +68,7 @@
                 }
             });
         }
+        // huh
 
     </script>
 

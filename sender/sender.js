@@ -12,7 +12,8 @@ function setup() {
   //maak een connect-object aan dat zorgt voor de communicatie met oscServer.js
   connect = new Connect();
   //maak verbinding met oscServer.js, en voer code tussen {} uit zodra deze verbinding tot stand is gekomen.
-  connect.connectToServer(function() {
+  connect.connectToServer(function () {
+    console.log('123');
     //maak een nieuwe client-object aan.
     client = new Client();
 
