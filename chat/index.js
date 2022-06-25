@@ -3,7 +3,12 @@
 const express = require('express');
 const app = express();
 const http = require('http');
-//const server = http.createServer(app);
+
+const { Client, Message } = require('node-osc');
+const client2 = new Client('localhost', 3000);
+
+
+'use strict';
 
 
 var udp = require('dgram');
@@ -37,46 +42,29 @@ io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
    // io.emit('chat message', msg);
     console.log(msg);
+    const message = new Message('/address');
+    message.append('testing');
+    message.append('testing');
+    message.append(msg);
+
+    client2.send(message, (err) => {
+      if (err) {
+        console.error(new Error(err));
+      } else{
+        console.log('Data sent 2 !!!');
+      }
+    // client2.close();
+    });
+        
   });
 });
+
+
+
 server.listen(3000, () => {
   console.log('listening on *:3000');
 });
 
 
 
-// -------------------- udp client ----------------
-var buffer = require('buffer');
 
-// creating a client socket
-var client = udp.createSocket('udp4');
-
-//buffer msg
-// var data = Buffer.from('1 2 3 4');
-var data = '1 2 3 4';
-
-client.on('message',function(msg,info){
-  console.log('Data received from server : ' + msg.toString());
-  console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
-});
-
-//sending msg
-client.send(data,3000,'localhost',function(error){
-  if(error){
-    client.close();
-  }else{
-    console.log('Data sent !!!');
-  }
-});
-
-// var data1 = Buffer.from('hello');
-// var data2 = Buffer.from('world');
-
-// //sending multiple msg
-// client.send([data1,data2],3000,'localhost',function(error){
-//   if(error){
-//     client.close();
-//   }else{
-//     console.log('Data sent !!!');
-//   }
-// });
