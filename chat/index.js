@@ -59,13 +59,17 @@ io.on('connection', (socket) => {
   socket.on('event_message', (msg) => {
       // io.emit('event_message', msg);
      
-      console.log(msg);
-      const msgArr = msg.split(" ");
-
-      const message = new Message('/TAK');
-      message.append(Number(msgArr[0]));
-      message.append(Number(msgArr[1]));
-  
+    console.log(msg);
+    
+    
+    const msgArr = msg.split(" ");
+    
+    const message = new Message('/TAK/' + msgArr[2] + '/');
+    message.append(Number(msgArr[0]));
+    message.append(Number(msgArr[1]));
+    
+    console.log(message);
+    
       client.send(message, (err) => {
         if (err) {
           console.error(new Error(err));
