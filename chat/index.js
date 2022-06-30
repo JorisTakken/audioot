@@ -1,22 +1,20 @@
-// doorbraak: chat en acc via https!
-
-const express = require('express');
-const app = express();
-const http = require('http');
-const axios = require('axios').default;
-const { Client, Message } = require('node-osc');
-const client2 = new Client('localhost', 3000);
 
 'use strict';
 
-// var udp = require('dgram');
+const express = require('express');
+const app = express();
+// const http = require('http');
+// const axios = require('axios').default;
+const { Client, Message } = require('node-osc');
+const client = new Client('localhost', 3000);
 
+// Access-Control-Allow-Origin is a CORS (Cross-Origin Resource Sharing) header.
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   next();
 });
 
-
+// server
 const https = require('https');
 var fs = require('fs');
 var options = {
@@ -25,79 +23,66 @@ var options = {
   ca: fs.readFileSync('/Applications/MAMP/Library/OpenSSL/certs/MAMP_PRO_Root_CA.crt')
 };
 
-
 const server = https.createServer(options, app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-
+// get the html
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/circle', (req, res) => {
+  res.sendFile(__dirname + '/circle.html');
+});
+
+
+app.get("/square", function (req, res) {
+  res.sendFile(__dirname + '/square.html');
+});
+
+app.get("/triangle", function (req, res) {
+  res.sendFile(__dirname + '/triangle.html');
+});
+
+
+// just logging
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 });
-var ip = '';
-getIpClient();
 
-
+// send to max
 io.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
-   //  io.emit('chat message', msg);
-
-    if (ip!='') {
-
-      console.log(ip);
+  socket.on('event_message', (msg) => {
+      // io.emit('event_message', msg);
+     
       console.log(msg);
       const msgArr = msg.split(" ");
 
-      // /w5c9FHmopCq6QU-u/deviceinfo "iPhone 6s" w5c9FHmopCq6QU-u ios 15.5 750 1334
-      // receivedmess: /ZIGSIM/w5c9FHmopCq6QU-u/compass 224.804474 0
-      // receivedmess: /ZIGSIM/w5c9FHmopCq6QU-u/gyro -0.014816 -0.034539 -0.000338
-      // receivedmess: /ZIGSIM/w5c9FHmopCq6QU-u/gyro -0.014816 -0.034539 77.25766
-  
-  
-      const message = new Message('/ZIGSIM/w5c9FHmopCq6QU-u/gyro');
+      const message = new Message('/TAK');
       message.append(Number(msgArr[0]));
       message.append(Number(msgArr[1]));
-      message.append(ip);
   
-      client2.send(message, (err) => {
+      client.send(message, (err) => {
         if (err) {
           console.error(new Error(err));
         } else {
          // console.log('Data sent 2 !!!');
         }
-      // client2.close();
-        
-        
+      // client.close();  
       });
-    }
-        
   });
+
 });
 
 
 
+// start serving
 server.listen(3000, () => {
   console.log('listening on *:3000');
 });
 
-
-
-
-
-
-async function getIpClient() {
-  try {
-    const response = await axios.get('https://api.ipify.org?format=json');
-    ip = response.data.ip;
-  } catch (error) {
-    console.error(error);
-  }
-}
 
