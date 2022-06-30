@@ -61,14 +61,16 @@ io.on('connection', (socket) => {
      
     console.log(msg);
     
-    
     const msgArr = msg.split(" ");
-    
-    const message = new Message('/TAK/' + msgArr[2] + '/');
-    message.append(Number(msgArr[0]));
+
+    const message = new Message('/TAK/' + msgArr[0] + '/');
     message.append(Number(msgArr[1]));
-    
-    console.log(message);
+    message.append(Number(msgArr[2]));
+    if (msgArr[3]) {
+      message.append(Number(msgArr[3]));
+    }
+
+  //   console.log(message);
     
       client.send(message, (err) => {
         if (err) {
