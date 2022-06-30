@@ -18,9 +18,9 @@ app.use((req, res, next) => {
 const https = require('https');
 var fs = require('fs');
 var options = {
-  key: fs.readFileSync('/Applications/MAMP/Library/OpenSSL/certs/node.local.key'),
-  cert: fs.readFileSync('/Applications/MAMP/Library/OpenSSL/certs/node.local.crt'),
-  ca: fs.readFileSync('/Applications/MAMP/Library/OpenSSL/certs/MAMP_PRO_Root_CA.crt')
+  key: fs.readFileSync('ssl/node.local.key'),
+  cert: fs.readFileSync('ssl/node.local.crt'),
+  ca: fs.readFileSync('ssl/MAMP_PRO_Root_CA.crt')
 };
 
 const server = https.createServer(options, app);
