@@ -18,8 +18,8 @@ app.use((req, res, next) => {
 const https = require('https');
 var fs = require('fs');
 var options = {
-  key: fs.readFileSync('ssl/node.local.key'),
-  cert: fs.readFileSync('ssl/node.local.crt'),
+  key: fs.readFileSync('ssl/audioot.data-ant.com.key'),
+  cert: fs.readFileSync('ssl/audioot.data-ant.com.crt'),
   ca: fs.readFileSync('ssl/MAMP_PRO_Root_CA.crt')
 };
 
