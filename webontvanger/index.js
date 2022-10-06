@@ -45,6 +45,19 @@ app.get("/triangle", function (req, res) {
   res.sendFile(__dirname + '/triangle.html');
 });
 
+app.get('/moon', (req, res) => {
+  res.sendFile(__dirname + '/moon.html');
+});
+
+
+app.get("/pentagon", function (req, res) {
+  res.sendFile(__dirname + '/pentagon.html');
+});
+
+app.get("/star", function (req, res) {
+  res.sendFile(__dirname + '/star.html');
+});
+
 
 // just logging
 io.on('connection', (socket) => {

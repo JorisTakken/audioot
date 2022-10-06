@@ -10,7 +10,6 @@
 
 
     <style>
-        
         .moon {
             background-color: blue;
             position: absolute;
@@ -170,15 +169,15 @@
                     vy = vy + frontToBack_degrees * updateRate;
 
                     // Update position and clip it to bounds
-                    px = px + vx * 2;
-                    if (px > 70 || px < 1) {
-                        px = Math.max(1, Math.min(70, px)) // Clip px between 0-98
+                    px = px + vx / 2;
+                    if (px > 80 || px < -20) {
+                        px = Math.max(-20, Math.min(80, px)) // Clip px between 0-98
                         vx = 0;
                     }
 
-                    py = py + vy * 2;
-                    if (py > 80 || py < 1) {
-                        py = Math.max(1, Math.min(80, py)) // Clip py between 0-98
+                    py = py + vy / 2;
+                    if (py > 85 || py < -10) {
+                        py = Math.max(-10, Math.min(85, py)) // Clip py between 0-98
                         vy = 0;
                     }
 
