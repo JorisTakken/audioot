@@ -10,14 +10,33 @@
     <!-- accel -->
     <style>
         
-        .square {
-            width: 250px;
-            height: 250px;
-            background-color: #ff56d2;
-            border-radius: 0%;
+        .star {
             position: fixed;
-            z-index: 1;
+            left: calc(50% - 50px);
+            top: calc(50% - 90px);
+            margin: 1em auto;
+            width: 1em;
+            font-size: 4em;
         }
+
+        .star:before {
+            content: "";
+            position: absolute;
+            background: red;
+            width: 1em;
+            height: 1.15em;
+            transform: rotate(-45deg) skewX(22.5deg) skewY(22.5deg);
+        }
+
+        .star:after {
+            content: "";
+            position: absolute;
+            background: red;
+            width: 1em;
+            height: 1.15em;
+            transform: rotate(45deg) skewX(22.5deg) skewY(22.5deg);
+        }
+
 
         #qfield {
             position: absolute;
@@ -25,7 +44,7 @@
             left: 0px;
             width: 100%;
             height: 100%;
-            background-color: #f00;
+            background-color: rgb(246, 255, 0);
             z-index: -1;
         }
     </style>
@@ -57,8 +76,7 @@
         border-radius:30px;
         ">Go
         </button>
-
-        <div id="dot" class="square" style="left:calc(50% - 125px); top:calc(50% - 125px);"></div>
+        <div id="dot" class="star" style="left:calc(50% - 125px); top:calc(50% - 125px);"></div>
     </div>
     <!-- /accel -->
 
@@ -85,14 +103,14 @@
     var qfield = document.getElementById('qfield');
     var width = qfield.offsetWidth;
     var height = qfield.offsetHeight;
-    var rotate = 0;
-    var scale = 1;
+
     var px = 50; // Position x and y
     var py = 50;
     var vx = 0.0; // Velocity x and y
     var vy = 0.0;
     var updateRate = 1 / 600; // Sensor refresh rate
     var tel = 1;
+    var rotate = 0;
     var sendrate = 10;
     var uuid = self.crypto.randomUUID();
 
@@ -116,7 +134,7 @@
 
     function qmessage(event) {
         dot = document.getElementById("dot");
-        //  dot = document.getElementsByClassName("square")[0];
+        //  dot = document.getElementsByClassName("star")[0];
         dot.setAttribute('style', "left:" + (event.clientX - 50) + "px;" + "top:" + (event.clientY - 50) + "px;");
         // socket.emit('event_message', event.clientX + ' ' + event.clientY);
         socket.emit('event_message', event.clientX + ' ' + event.clientY + ' ' + uuid);
@@ -145,7 +163,7 @@
                     leftToRight_degrees = event.gamma;
 
 
-                    // dot = document.getElementsByClassName("square")[0]
+                    // dot = document.getElementsByClassName("star")[0]
                     dot = document.getElementById("dot");
                     var rect = dot.getBoundingClientRect();
                     // console.log(rect.top, rect.right, rect.bottom, rect.left);
@@ -156,44 +174,44 @@
                     vy = vy + frontToBack_degrees * updateRate;
 
                     // Update position and clip it to bounds
-                    px = px + vx * .5;
-                    if (px > 70 || px < 0) {
-                        px = Math.max(0, Math.min(70, px)) // Clip px between 0-98
+                    px = px + vx * 2;
+                    if (px > 70 || px < 1) {
+                        px = Math.max(1, Math.min(70, px)) // Clip px between 0-98
                         vx = 0;
                     }
 
-                    py = py + vy * .5;
-                    if (py > 80 || py < 0) {
-                        py = Math.max(0, Math.min(98, py)) // Clip py between 0-98
+                    py = py + vy * 2;
+                    if (py > 80 || py < 1) {
+                        py = Math.max(1, Math.min(80, py)) // Clip py between 0-98
                         vy = 0;
                     }
 
                     var pixx = rect.right * (px / 100);
                     var pixy = rect.bottom * (py / 100);
 
+                    // dot.setAttribute('style', "left:" + pixx + "px;" + "top:" + pixy + "px; transform: rotate(" + rotate + "deg);");
+                    //   console.log(frontToBack_degrees);
 
-                    scale = scale + leftToRight_degrees + leftToRight_degrees;
+                    rotate = rotate + frontToBack_degrees + leftToRight_degrees;
+                    var scale = rotate / 100;
 
-                    rotate = rotate - frontToBack_degrees;
-
-                    if (scale > 50) {
-
-                        scale = 0;
-                        console.log(scale);
+                    if (rotate > 360) {
+                        rotate = 0;
+                    }
+                    if (rotate < 1) {
+                        rotate = 0;
                     }
                     //  dot.setAttribute('style', "transform: rotate(" + tel + ");");
-                    // dot.setAttribute('style', "left:" + (px) + "%;" + "top:" + (py) + "%; transform: scale(" + scale + "%);");
                     dot.setAttribute('style', "left:" + (px) + "%;" + "top:" + (py) + "%; transform: rotate(" + rotate + "deg);");
+
 
                     if (tel > sendrate) {
                         // socket.emit('event_message', px);
-                        socket.emit('event_message', uuid + ' 2 ' + px + ' ' + py);
+                        socket.emit('event_message', uuid + ' 3 ' + pixx + ' ' + pixy + ' ' + rotate);
                         tel = 0;
                     }
 
                     tel = tel + 1;
-
-
                     rotate = rotate + 1;
                 });
             }
