@@ -184,7 +184,7 @@
                     dot.setAttribute('style', "left:" + (px) + "%;" + "top:" + (py) + "%;");
 
                     if (tel > sendrate) {
-                        socket.emit('event_message', uuid + ' ' + px + ' ' + py);
+                        socket.emit('event_message', uuid + ' 1 ' + px + ' ' + py);
                         tel = 0;
                     }
 
