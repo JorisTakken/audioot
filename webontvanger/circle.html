@@ -10,7 +10,8 @@
 
 
     <style>
-        .indicatorDot {
+        
+        .circle {
             width: 100px;
             height: 100px;
             background-color: #f7ff56;
@@ -62,7 +63,7 @@
         border-radius:30px;
         ">Go
         </button>
-        <div id="dot" class="indicatorDot" style="left:calc(50% - 50px); top:calc(50% - 50px);"></div>
+        <div id="dot" class="circle" style="left:calc(50% - 50px); top:calc(50% - 50px);"></div>
     </div>
     <!-- /accel -->
 
@@ -154,7 +155,7 @@
                     leftToRight_degrees = event.gamma;
 
 
-                    // dot = document.getElementsByClassName("indicatorDot")[0]
+                    // dot = document.getElementsByClassName("circle")[0]
                     dot = document.getElementById("dot");
                     var rect = dot.getBoundingClientRect();
                     // console.log(rect.top, rect.right, rect.bottom, rect.left);
