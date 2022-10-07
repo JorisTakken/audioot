@@ -3,22 +3,17 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.IO chat</title>
+    <title>Star</title>
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 
     <!-- accel -->
     <style>
-        .indicatorDot {
-            width: 250px;
-            height: 250px;
-            position: fixed;
-            width: 0;
-            height: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 100px solid #ff56d2;
+        .star {
+            left: -1000px;
         }
+
+
 
         #qfield {
             position: absolute;
@@ -39,26 +34,9 @@
 
     <!-- accel -->
     <div id="main">
-        <button id="accelPermsButton" onclick="getAccel()" style="   
-        position:fixed;
-        top: calc(50% - 80px);
-        left: calc(5%);
-        margin:0px;
-        z-index:2; 
-        width:90%;
-        font-size:40px;  
-        background-color: #4CAF50; /* Green */
-        border: none;
-        color: white;
-        padding: 10%;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 120px;
-        border-radius:30px;
-        ">Go
+        <button id="accelPermsButton" onclick="getAccel()">Start
         </button>
-        <div id="dot" class="indicatorDot" style="left:calc(50% - 125px); top:calc(50% - 125px);"></div>
+        <div id="dot" class="star"></div>
     </div>
     <!-- /accel -->
 
@@ -116,7 +94,7 @@
 
     function qmessage(event) {
         dot = document.getElementById("dot");
-        //  dot = document.getElementsByClassName("indicatorDot")[0];
+        //  dot = document.getElementsByClassName("star")[0];
         dot.setAttribute('style', "left:" + (event.clientX - 50) + "px;" + "top:" + (event.clientY - 50) + "px;");
         // socket.emit('event_message', event.clientX + ' ' + event.clientY);
         socket.emit('event_message', event.clientX + ' ' + event.clientY + ' ' + uuid);
@@ -145,7 +123,7 @@
                     leftToRight_degrees = event.gamma;
 
 
-                    // dot = document.getElementsByClassName("indicatorDot")[0]
+                    // dot = document.getElementsByClassName("star")[0]
                     dot = document.getElementById("dot");
                     var rect = dot.getBoundingClientRect();
                     // console.log(rect.top, rect.right, rect.bottom, rect.left);
@@ -153,16 +131,17 @@
                     // Update velocity according to how tilted the phone is
                     // Since phones are narrower than they are long, double the increase to the x velocity
                     vx = vx + leftToRight_degrees * updateRate * 2;
-                    vy = vy + frontToBack_degrees * updateRate;
+                    // vy = vy + frontToBack_degrees * updateRate;
+                    vy = vy - (frontToBack_degrees + 120) * updateRate;
 
                     // Update position and clip it to bounds
-                    px = px + vx * 2;
+                    px = px + vx * 0.02;
                     if (px > 70 || px < 1) {
                         px = Math.max(1, Math.min(70, px)) // Clip px between 0-98
                         vx = 0;
                     }
 
-                    py = py + vy * 2;
+                    py = py + vy * 0.02;
                     if (py > 80 || py < 1) {
                         py = Math.max(1, Math.min(80, py)) // Clip py between 0-98
                         vy = 0;
@@ -174,7 +153,7 @@
                     // dot.setAttribute('style', "left:" + pixx + "px;" + "top:" + pixy + "px; transform: rotate(" + rotate + "deg);");
                     //   console.log(frontToBack_degrees);
 
-                    rotate = rotate + frontToBack_degrees + leftToRight_degrees;
+                    rotate = rotate + leftToRight_degrees;
                     var scale = rotate / 100;
 
                     if (rotate > 360) {
@@ -189,7 +168,7 @@
 
                     if (tel > sendrate) {
                         // socket.emit('event_message', px);
-                        socket.emit('event_message', uuid + ' 3 ' + pixx + ' ' + pixy + ' ' + rotate);
+                        socket.emit('event_message', uuid + ' 4 ' + pixx + ' ' + pixy + ' ' + rotate);
                         tel = 0;
                     }
 

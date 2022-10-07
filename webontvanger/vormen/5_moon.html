@@ -3,40 +3,16 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.IO chat</title>
+    <meta name="mobile-web-app-capable" content="yes" />
 
-    <link rel="stylesheet" href="styles.css">
+    <title>TAK MOON</title>
 
-    <!-- accel -->
+    <link rel="stylesheet" href="style.css">
+
     <style>
-        
-        .star {
-            position: fixed;
-            left: calc(50% - 50px);
-            top: calc(50% - 90px);
-            margin: 1em auto;
-            width: 1em;
-            font-size: 4em;
+        .moon {
+            left: -1000px;
         }
-
-        .star:before {
-            content: "";
-            position: absolute;
-            background: red;
-            width: 1em;
-            height: 1.15em;
-            transform: rotate(-45deg) skewX(22.5deg) skewY(22.5deg);
-        }
-
-        .star:after {
-            content: "";
-            position: absolute;
-            background: red;
-            width: 1em;
-            height: 1.15em;
-            transform: rotate(45deg) skewX(22.5deg) skewY(22.5deg);
-        }
-
 
         #qfield {
             position: absolute;
@@ -44,8 +20,13 @@
             left: 0px;
             width: 100%;
             height: 100%;
-            background-color: rgb(246, 255, 0);
+            background-color: hwb(259 0% 69%);
             z-index: -1;
+        }
+
+        #main {
+            padding: 0;
+            margin: 0px;
         }
     </style>
 
@@ -55,40 +36,11 @@
 
 <body style="background-color:lightblue;">
 
-    <!-- accel -->
     <div id="main">
-        <button id="accelPermsButton" onclick="getAccel()" style="   
-        position:fixed;
-        top: calc(50% - 80px);
-        left: calc(5%);
-        margin:0px;
-        z-index:2; 
-        width:90%;
-        font-size:40px;  
-        background-color: #4CAF50; /* Green */
-        border: none;
-        color: white;
-        padding: 10%;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 120px;
-        border-radius:30px;
-        ">Go
-        </button>
-        <div id="dot" class="star" style="left:calc(50% - 125px); top:calc(50% - 125px);"></div>
+        <button id="accelPermsButton" onclick="getAccel()">Click and look up!</button>
+        <div id="dot" class="moon"></div>
     </div>
-    <!-- /accel -->
-
-
-    <div id="qfield" onclick="qmessage">
-
-    </div>
-
-    <!-- chat -->
-    <ul id="messages"></ul>
-
-
+    <div id="qfield" onclick="qmessage"></div>
 
 </body>
 
@@ -114,29 +66,15 @@
     var sendrate = 10;
     var uuid = self.crypto.randomUUID();
 
-    // var input = document.getElementById('input');
-
-    // form.addEventListener('submit', function (e) {
-    //     e.preventDefault();
-    //     if (input.value) {
-    //         socket.emit('event_message', input.value);
-    //         input.value = '';
-    //     }
-    // });
-
     socket.on('event_message', function (msg) {
         var item = document.createElement('li');
         item.textContent = msg;
         messages.appendChild(item);
-        // window.scrollTo(0, document.body.scrollHeight);
     });
-
 
     function qmessage(event) {
         dot = document.getElementById("dot");
-        //  dot = document.getElementsByClassName("star")[0];
-        dot.setAttribute('style', "left:" + (event.clientX - 50) + "px;" + "top:" + (event.clientY - 50) + "px;");
-        // socket.emit('event_message', event.clientX + ' ' + event.clientY);
+        dot.setAttribute('style', "left:" + (event.clientX - 50) + "px;");
         socket.emit('event_message', event.clientX + ' ' + event.clientY + ' ' + uuid);
     }
 
@@ -163,7 +101,7 @@
                     leftToRight_degrees = event.gamma;
 
 
-                    // dot = document.getElementsByClassName("star")[0]
+                    // dot = document.getElementsByClassName("moon")[0]
                     dot = document.getElementById("dot");
                     var rect = dot.getBoundingClientRect();
                     // console.log(rect.top, rect.right, rect.bottom, rect.left);
@@ -171,16 +109,17 @@
                     // Update velocity according to how tilted the phone is
                     // Since phones are narrower than they are long, double the increase to the x velocity
                     vx = vx + leftToRight_degrees * updateRate * 2;
-                    vy = vy + frontToBack_degrees * updateRate;
+                    vy = vy - (frontToBack_degrees - 90) * updateRate;
 
                     // Update position and clip it to bounds
-                    px = px + vx * 2;
-                    if (px > 70 || px < 1) {
-                        px = Math.max(1, Math.min(70, px)) // Clip px between 0-98
-                        vx = 0;
-                    }
+                    // px = px + vx * 2;
+                    // if (px > 70 || px < 1) {
+                    //     px = Math.max(1, Math.min(70, px)) // Clip px between 0-98
+                    //     vx = 0;
+                    // }
+                    px = 30;
 
-                    py = py + vy * 2;
+                    py = py + vy * 0.1;
                     if (py > 80 || py < 1) {
                         py = Math.max(1, Math.min(80, py)) // Clip py between 0-98
                         vy = 0;
@@ -193,7 +132,7 @@
                     //   console.log(frontToBack_degrees);
 
                     rotate = rotate + frontToBack_degrees + leftToRight_degrees;
-                    var scale = rotate / 100;
+                    //    var scale = rotate / 100;
 
                     if (rotate > 360) {
                         rotate = 0;
@@ -201,13 +140,30 @@
                     if (rotate < 1) {
                         rotate = 0;
                     }
+
+
+                    var minperc = 0;
+                    var maxperc = 80;
+
+
+                    var perc = (pixy / rect.bottom) * maxperc;
+                    var omkeer = (100 - perc) - (100 - maxperc);
+
+
                     //  dot.setAttribute('style', "transform: rotate(" + tel + ");");
-                    dot.setAttribute('style', "left:" + (px) + "%;" + "top:" + (py) + "%; transform: rotate(" + rotate + "deg);");
+
+                    dot.setAttribute('style', "left:" + (px) + "%;" + "top:" + (py) + "%;  box-shadow: 25px 10px 0 0 hsl(240, 88%, " + omkeer + "%);");
+                    // dot.setAttribute('style', "top:" + (py) + "%;");
+
+
+                    qfield.setAttribute('style', "background-color:hsl(240, 88%, " + perc + "%)");
+
+                    //  background-color: hwb(259 0% 69%);
 
 
                     if (tel > sendrate) {
                         // socket.emit('event_message', px);
-                        socket.emit('event_message', uuid + ' 3 ' + pixx + ' ' + pixy + ' ' + rotate);
+                        socket.emit('event_message', uuid + ' 5 ' + pixx + ' ' + pixy + ' ' + perc);
                         tel = 0;
                     }
 

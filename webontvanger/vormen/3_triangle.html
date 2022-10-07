@@ -3,24 +3,15 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Triangle</title>
 
-    <title>TAK MOON</title>
+    <link rel="stylesheet" href="style.css">
 
-
-
+    <!-- accel -->
     <style>
-        .moon {
-            background-color: blue;
-            position: absolute;
-            margin: auto;
-            background-color: transparent;
-            height: 100px;
-            width: 100px;
-            border-radius: 50%;
-            box-shadow: 25px 10px 0 0 blue;
+        .triangle {
+            left: -1000px;
         }
-
 
         #qfield {
             position: absolute;
@@ -28,13 +19,8 @@
             left: 0px;
             width: 100%;
             height: 100%;
-            background-color: rgb(43, 13, 99);
+            background-color: rgb(246, 255, 0);
             z-index: -1;
-        }
-
-        #main {
-            padding: 0;
-            margin: 0px;
         }
     </style>
 
@@ -46,26 +32,9 @@
 
     <!-- accel -->
     <div id="main">
-        <button id="accelPermsButton" onclick="getAccel()" style="   
-        position:fixed;
-        top: calc(50% - 80px);
-        left: calc(5%);
-        margin:0px;
-        z-index:2; 
-        width:90%;
-        font-size:40px;  
-        background-color: #4CAF50; /* Green */
-        border: none;
-        color: white;
-        padding: 10%;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 120px;
-        border-radius:30px;
-        ">Go
+        <button id="accelPermsButton" onclick="getAccel()">Start
         </button>
-        <div id="dot" class="moon" style="left:calc(50% - 50px); top:calc(50% - 50px);"></div>
+        <div id="dot" class="triangle"></div>
     </div>
     <!-- /accel -->
 
@@ -93,14 +62,13 @@
     var width = qfield.offsetWidth;
     var height = qfield.offsetHeight;
 
-
-
     var px = 50; // Position x and y
     var py = 50;
     var vx = 0.0; // Velocity x and y
     var vy = 0.0;
     var updateRate = 1 / 600; // Sensor refresh rate
     var tel = 1;
+    var rotate = 0;
     var sendrate = 10;
     var uuid = self.crypto.randomUUID();
 
@@ -118,24 +86,21 @@
         var item = document.createElement('li');
         item.textContent = msg;
         messages.appendChild(item);
+        // window.scrollTo(0, document.body.scrollHeight);
     });
 
 
     function qmessage(event) {
         dot = document.getElementById("dot");
+        //  dot = document.getElementsByClassName("triangle")[0];
         dot.setAttribute('style', "left:" + (event.clientX - 50) + "px;" + "top:" + (event.clientY - 50) + "px;");
+        // socket.emit('event_message', event.clientX + ' ' + event.clientY);
         socket.emit('event_message', event.clientX + ' ' + event.clientY + ' ' + uuid);
     }
 
     document.addEventListener("click", qmessage);
 
 
-    window.addEventListener("load", function () {
-        setTimeout(function () {
-            // This hides the address bar:
-            window.scrollTo(0, 1);
-        }, 0);
-    });
 
     function getAccel() {
 
@@ -150,18 +115,16 @@
                 // Add a listener to get smartphone orientation 
                 // in the alpha-beta-gamma axes (units in degrees)
                 window.addEventListener('deviceorientation', (event) => {
-
                     // Expose each orientation angle in a more readable way
                     rotation_degrees = event.alpha;
                     frontToBack_degrees = event.beta;
                     leftToRight_degrees = event.gamma;
 
 
-                    // dot = document.getElementsByClassName("moon")[0]
+                    // dot = document.getElementsByClassName("triangle")[0]
                     dot = document.getElementById("dot");
                     var rect = dot.getBoundingClientRect();
                     // console.log(rect.top, rect.right, rect.bottom, rect.left);
-
 
                     // Update velocity according to how tilted the phone is
                     // Since phones are narrower than they are long, double the increase to the x velocity
@@ -169,29 +132,45 @@
                     vy = vy + frontToBack_degrees * updateRate;
 
                     // Update position and clip it to bounds
-                    px = px + vx / 2;
-                    if (px > 80 || px < -20) {
-                        px = Math.max(-20, Math.min(80, px)) // Clip px between 0-98
+                    px = px + vx * 2;
+                    if (px > 70 || px < 1) {
+                        px = Math.max(1, Math.min(70, px)) // Clip px between 0-98
                         vx = 0;
                     }
 
-                    py = py + vy / 2;
-                    if (py > 85 || py < -10) {
-                        py = Math.max(-10, Math.min(85, py)) // Clip py between 0-98
+                    py = py + vy * 2;
+                    if (py > 80 || py < 1) {
+                        py = Math.max(1, Math.min(80, py)) // Clip py between 0-98
                         vy = 0;
                     }
 
-                    // var pixx = rect.right * (px / 100);
-                    // var pixy = rect.bottom * (py / 100);
+                    var pixx = rect.right * (px / 100);
+                    var pixy = rect.bottom * (py / 100);
 
-                    dot.setAttribute('style', "left:" + (px) + "%;" + "top:" + (py) + "%;");
+                    // dot.setAttribute('style', "left:" + pixx + "px;" + "top:" + pixy + "px; transform: rotate(" + rotate + "deg);");
+                    //   console.log(frontToBack_degrees);
+
+                    rotate = rotate + frontToBack_degrees + leftToRight_degrees;
+                    //    var scale = rotate / 100;
+
+                    if (rotate > 360) {
+                        rotate = 0;
+                    }
+                    if (rotate < 1) {
+                        rotate = 0;
+                    }
+                    //  dot.setAttribute('style', "transform: rotate(" + tel + ");");
+                    dot.setAttribute('style', "left:" + (px) + "%;" + "top:" + (py) + "%; transform: rotate(" + rotate + "deg);");
+
 
                     if (tel > sendrate) {
-                        socket.emit('event_message', uuid + ' 1 ' + px + ' ' + py);
+                        // socket.emit('event_message', px);
+                        socket.emit('event_message', uuid + ' 3 ' + pixx + ' ' + pixy + ' ' + rotate);
                         tel = 0;
                     }
 
                     tel = tel + 1;
+                    rotate = rotate + 1;
                 });
             }
         });

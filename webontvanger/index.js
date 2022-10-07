@@ -1,6 +1,10 @@
 
 'use strict';
 
+const { networkInterfaces } = require('os');
+
+
+
 const express = require('express');
 const app = express();
 // const http = require('http');
@@ -32,31 +36,37 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/style.css', (req, res) => {
+  res.sendFile(__dirname + '/vormen/style.css');
+});
+
+
 app.get('/circle', (req, res) => {
-  res.sendFile(__dirname + '/circle.html');
+  res.sendFile(__dirname + '/vormen/1_circle.html');
 });
 
 
 app.get("/square", function (req, res) {
-  res.sendFile(__dirname + '/square.html');
+  res.sendFile(__dirname + '/vormen/2_square.html');
 });
 
 app.get("/triangle", function (req, res) {
-  res.sendFile(__dirname + '/triangle.html');
-});
-
-app.get('/moon', (req, res) => {
-  res.sendFile(__dirname + '/moon.html');
-});
-
-
-app.get("/pentagon", function (req, res) {
-  res.sendFile(__dirname + '/pentagon.html');
+  res.sendFile(__dirname + '/vormen/3_triangle.html');
 });
 
 app.get("/star", function (req, res) {
-  res.sendFile(__dirname + '/star.html');
+  res.sendFile(__dirname + '/vormen/4_star.html');
 });
+
+
+app.get('/moon', (req, res) => {
+  res.sendFile(__dirname + '/vormen/5_moon.html');
+});
+
+app.get("/pentagon", function (req, res) {
+  res.sendFile(__dirname + '/vormen/6_pentagon.html');
+});
+
 
 
 // just logging
@@ -101,7 +111,32 @@ io.on('connection', (socket) => {
 
 // start serving
 server.listen(3000, () => {
-  console.log('listening on *:3000');
+
+
+  const nets = networkInterfaces();
+  const results = Object.create(null); // Or just '{}', an empty object
+  
+  for (const name of Object.keys(nets)) {
+      for (const net of nets[name]) {
+          // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+          // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+          const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
+          if (net.family === familyV4Value && !net.internal) {
+              if (!results[name]) {
+                  results[name] = [];
+              }
+              results[name].push(net.address);
+          }
+      }
+  }
+  
+  console.log('lokaal adres in eigen netwerk: https://' + results["en0"][0] + ':3000');
+  
+
+
+
+
+  //console.log('listening on *:3000');
 });
 
 
